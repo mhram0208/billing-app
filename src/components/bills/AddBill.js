@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { asyncGetAllCustomers } from '../../actions/customerActions'
 import { asyncGetAllProducts } from '../../actions/productActions'
-import { asyncAddBill } from '../../actions/billActions'
+import CustomerSelection from './CustomerSelection'
+import ProductSelection from './ProductSelection'
+import BillSummary from './BillSummary'
+import Cart from './Cart'
 
 function AddBill(props) {
-    const [productId, setProductId] = useState('')
-    const [customerId, setCustomerId] = useState('')
-    const [quantity, setQuantity] = useState('')
+    const [selectedCustomer, setSelectedCustomer] = useState({})
+    const [lineItems, setLineItems] = useState([])
+    const [total, setTotal] = useState('')
 
     const dispatch = useDispatch()
 
@@ -19,27 +22,61 @@ function AddBill(props) {
     const customers = useSelector(state => state.customers)
     const products = useSelector(state => state.products)
 
-    const handleChange = (e) => {
-        const attr = e.target.name
-        if (attr === 'product') {
-            setProductId(e.target.value)
-        } else if (attr === 'customer') {
-            setCustomerId(e.target.value)
-        } else if (attr === 'quantity') {
-            setQuantity(e.target.value)
-        }
+    const setCustomer = (cust) => {
+        setSelectedCustomer(cust)
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const formData = {
-            date: new Date(),
-            customer: customerId,
-            lineItems: [
-                { product: productId, quantity: quantity }
-            ]
+
+    const handleAddLineItem = (data) => {
+        const result = [...lineItems, data]
+        setLineItems(result)
+    }
+
+    const handleChangeQuantity = (item, type) => {
+        if (type === 'increment') {
+            const newItemPlus = { ...item, quantity: item.quantity + 1 }
+            const result = lineItems.map((ele) => {
+                if (ele._id === newItemPlus._id) {
+                    return newItemPlus
+                } else {
+                    return ele
+                }
+            })
+            setLineItems(result)
+        } else {
+            const newItemMinus = { ...item, quantity: item.quantity - 1 }
+            const result = lineItems.map((ele) => {
+                if (ele._id === newItemMinus._id) {
+                    return newItemMinus
+                } else {
+                    return ele
+                }
+            })
+            setLineItems(result)
         }
-        dispatch(asyncAddBill(formData))
+
+    }
+
+    const deleteCartItem = (id) => {
+        const result = lineItems.filter(item => item._id !== id)
+        setLineItems(result)
+    }
+
+    useEffect(() => {
+        calculateTotal(lineItems)
+    }, [lineItems])
+
+    const calculateTotal = (lineItems) => {
+        let total = 0
+        lineItems.forEach((item) => {
+            products.forEach((prod) => {
+                if (item._id === prod._id) {
+                    total = total + (prod.price * item.quantity)
+                    setTotal(total)
+                }
+            })
+
+        })
     }
 
     return (
@@ -47,26 +84,10 @@ function AddBill(props) {
             {customers.length > 0 && products.length > 0 ? (
                 <>
                     <h2>Add Bill</h2>
-                    <form onSubmit={handleSubmit}>
-                        <select name="customer" value={customerId} onChange={handleChange}>
-                            <option value="">Select Cutomer</option>
-                            {customers.map((customer) => {
-                                return (
-                                    <option value={customer._id} key={customer._id}>{customer.name}</option>
-                                )
-                            })}
-                        </select>
-                        <select name="product" value={productId} onChange={handleChange}>
-                            <option value="">Select Product</option>
-                            {products.map((product) => {
-                                return (
-                                    <option value={product._id} key={product._id}>{product.name}</option>
-                                )
-                            })}
-                        </select>
-                        <input type="number" name="quantity" value={quantity} onChange={handleChange} />
-                        <button type="submit">Submit</button>
-                    </form>
+                    <CustomerSelection customers={customers} setCustomer={setCustomer} />
+                    <ProductSelection products={products} handleAddLineItem={handleAddLineItem} />
+                    <Cart lineItems={lineItems} products={products} handleChangeQuantity={handleChangeQuantity} deleteCartItem={deleteCartItem} />
+                    <BillSummary selectedCustomer={selectedCustomer} lineItems={lineItems} total={total} />
                 </>
             ) : (
                 <h2>Please add atleast one Customer and Product before generating bill</h2>

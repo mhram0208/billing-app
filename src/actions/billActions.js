@@ -30,9 +30,9 @@ export const setBills = (bills) => {
     }
 }
 
-export const asyncAddBill = (formData) => {
+export const asyncAddBill = (billData) => {
     return (dispatch, getState) => {
-        axios.post(`http://dct-billing-app.herokuapp.com/api/bills`, formData, {
+        axios.post(`http://dct-billing-app.herokuapp.com/api/bills`, billData, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -40,7 +40,7 @@ export const asyncAddBill = (formData) => {
             .then((response) => {
                 const bill = response.data
                 if (bill.hasOwnProperty('errors')) {
-                    alert(bill.errors)
+                    alert(bill._message)
                 } else {
                     console.log(bill)
                     dispatch(addBill(bill))

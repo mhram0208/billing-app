@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { addCustomer } from '../../actions/customerActions'
 import CustomersList from './CustomersList'
 import AddCustomer from './AddCustomer'
 import EditCustomer from './EditCustomer'
