@@ -10,7 +10,7 @@ import Customers from '../customers/Customers'
 import Products from '../products/Products'
 import BillsPage from '../bills/BillsPage'
 
-function NavBar(props) {
+function NavigationBar(props) {
     const dispatch = useDispatch()
     const [userLoggedIn, setUserLoggedIn] = useState(false)
 
@@ -60,4 +60,4 @@ function NavBar(props) {
     )
 }
 
-export default NavBar
+export default NavigationBar
