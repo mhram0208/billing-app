@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { startRegister } from '../actions/userActions'
+import { startRegister } from '../../actions/userActions'
 
 function Register() {
 

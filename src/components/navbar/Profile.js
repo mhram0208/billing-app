@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { asynGetProfileDetails } from '../actions/userActions'
+import { asynGetProfileDetails } from '../../actions/userActions'
 
 function Profile() {
     const dispatch = useDispatch()
