@@ -42,8 +42,8 @@ export const asyncAddBill = (billData) => {
                 if (bill.hasOwnProperty('errors')) {
                     alert(bill._message)
                 } else {
-                    console.log(bill)
                     dispatch(addBill(bill))
+                    // window.location.reload()
                 }
             })
             .catch((err) => {

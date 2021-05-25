@@ -79,6 +79,11 @@ function AddBill(props) {
         })
     }
 
+    const resetStateValues = () => {
+        setSelectedCustomer('')
+        setLineItems('')
+    }
+
     return (
         <div>
             {customers.length > 0 && products.length > 0 ? (
@@ -86,8 +91,13 @@ function AddBill(props) {
                     <h2>Add Bill</h2>
                     <CustomerSelection customers={customers} setCustomer={setCustomer} />
                     <ProductSelection products={products} handleAddLineItem={handleAddLineItem} />
-                    <Cart lineItems={lineItems} products={products} handleChangeQuantity={handleChangeQuantity} deleteCartItem={deleteCartItem} />
-                    <BillSummary selectedCustomer={selectedCustomer} lineItems={lineItems} total={total} />
+
+                    {lineItems.length > 0 &&
+                        <>
+                            <Cart lineItems={lineItems} products={products} handleChangeQuantity={handleChangeQuantity} deleteCartItem={deleteCartItem} />
+                            <BillSummary selectedCustomer={selectedCustomer} lineItems={lineItems} total={total} resetStateValues={resetStateValues} />
+                        </>
+                    }
                 </>
             ) : (
                 <h2>Please add atleast one Customer and Product before generating bill</h2>

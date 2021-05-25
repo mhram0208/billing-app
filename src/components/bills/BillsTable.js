@@ -31,6 +31,7 @@ function BillsTable(props) {
 
     return (
         <div>
+            <h2>All Bills</h2>
             <table>
                 <thead>
                     <tr>

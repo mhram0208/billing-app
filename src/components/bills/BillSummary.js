@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { asyncAddBill } from '../../actions/billActions'
 
 function BillSummary(props) {
-    const { lineItems, total, selectedCustomer } = props
+    const { lineItems, total, selectedCustomer, resetStateValues } = props
     const dispatch = useDispatch()
 
     const handleGenerateBill = () => {
@@ -17,8 +17,8 @@ function BillSummary(props) {
             customer: selectedCustomer._id,
             lineItems: items
         }
-        console.log('formData', billData)
         dispatch(asyncAddBill(billData))
+        // resetStateValues()
     }
 
     return (
@@ -33,6 +33,7 @@ function BillSummary(props) {
                         <p>Total Products - {lineItems.length}</p>
                         <p>Total Amount - {total} </p>
                         <button onClick={handleGenerateBill}>Generate Bill</button>
+                        <br /><hr />
                     </>
                 )
                 : (
